@@ -1,0 +1,349 @@
+#include<iostream>
+using namespace std;
+struct Person
+{
+	string m_Name;
+	int m_sex;//1 男  2  女
+	int m_age;
+	string m_Phone;
+	string m_Addr;
+};
+#define MAX 1000
+struct Addressbooks
+{
+	struct Person personarray[MAX];
+	int m_Size;
+};
+void showmenu()
+{
+	cout << "1、添加联系人" << endl;
+	cout << "2、显示联系人" << endl;
+	cout << "3、删除联系人" << endl;
+	cout << "4、查找联系人" << endl;
+	cout << "5、修改联系人" << endl;
+	cout << "6、清空联系人" << endl;
+	cout << "0、退出通讯录" << endl;
+}
+bool AllisNum(string str) 
+{
+	for (int i = 0; i < str.size(); i++)
+    {
+         int tmp = (int)str[i];
+         if (tmp >= 48 && tmp <= 57)
+         {
+             continue;
+         }
+         else
+         {
+             return false;
+         }
+     } 
+     return true;
+}
+void isnum(string s)
+{
+	while (true)
+	{
+		if (AllisNum(s))
+		{
+			cout << "请勿输入数字，请重新输入" << endl;
+			cin >> s;
+		}
+		break;
+	}
+}
+void islayoutage(int age)
+{
+	while (true)
+	{
+		if (age < 120)
+		{
+			break;
+		}
+		cout << "请输入正确的年龄" << endl;
+		cin >> age;
+	}
+}
+void isword(string s)
+{
+	while (true)
+	{
+		if (AllisNum(s))
+		{
+			break;
+		}
+		cout << "请输入数字" << endl;
+		cin >> s;
+	}
+}
+void islayoutphone(string s) 
+{
+	while (true)
+	{
+		if (s.length() == 11)
+		{
+			break;
+		}
+		cout << "请输入11位电话号码" << endl;
+		cin >> s;
+	}
+}
+void layoutphone(string s)
+{
+	isword(s);
+	islayoutphone(s);
+}
+void modifytarget(int a,Addressbooks* abs,int ret)
+{
+	switch (a)
+	{
+	case 1:
+	{
+		string name;
+		cout << "当前姓名：" << abs->personarray[ret].m_Name << "\t" << "请输入修改后的姓名：" << endl;
+		cin >> name;
+		isnum(name);
+		abs->personarray[ret].m_Name = name;
+		break; 
+	}
+	case 2:
+	{
+		int sex = 0;
+		cout << "当前性别：" << abs->personarray[ret].m_sex << "\t" << "请输入修改后的性别：1->男；2->女" << endl;
+		while (true) {
+			cin >> sex;
+			if (sex == 1 || sex == 2)
+			{
+				abs->personarray[ret].m_sex = sex;
+				break;
+			}
+			cout << "输入有误，请重新输入" << endl;
+		}
+		break;
+	}
+	case 3:
+	{
+		int age = 0;
+		cout << "当前年龄：" << abs->personarray[ret].m_age << "\t" << "请输入修改后的年龄：" << endl;
+		cin >> age;
+		islayoutage(age);
+		abs->personarray[ret].m_age = age;
+		break;
+	}
+	case 4:
+	{
+		string phone;
+		cout << "当前电话号码：" << abs->personarray[ret].m_Phone << "\t" << "请输入修改后的电话号码：" << endl;
+		cin >> phone;
+		layoutphone(phone);
+		abs->personarray[ret].m_Phone = phone;
+		break;
+	}
+	case 5:
+	{
+		string addr;
+		cout << "当前地址：" << abs->personarray[ret].m_Addr << "\t" << "请输入修改后的地址：" << endl;
+		cin >> addr;
+		isnum(addr);
+		abs->personarray[ret].m_Addr = addr;
+		break;
+	}
+	default:
+		break;
+	}
+}
+void addPerson(Addressbooks* abs)
+{
+	if (abs->m_Size == MAX)
+	{
+		cout << "通讯录已满，无法添加" << endl;
+		return;
+	}
+	else
+	{
+		string name;
+		cout << "请输入姓名" << endl;
+		cin >> name;
+		isnum(name);//非数字
+		abs->personarray[abs->m_Size].m_Name = name;
+		int sex=0;
+		cout << "请输入性别：  1->男；2->女" << endl;
+		while (true)
+		{
+			cin >> sex;
+			if (sex == 1 || sex == 2)
+			{
+				abs->personarray[abs->m_Size].m_sex = sex;
+				break;
+			}
+			cout << "输入有误，请重新输入" << endl;
+		}
+		int age;
+		cout << "请输入年龄" << endl;
+		cin >> age;
+		islayoutage(age);//小于120岁
+		abs->personarray[abs->m_Size].m_age = age ;
+		string phone;
+		cout << "请输入电话号码" << endl;
+		cin >> phone;
+		layoutphone(phone);//11位，数字
+		abs->personarray[abs->m_Size].m_Phone = phone;
+		string addr;
+		cout << "请输入地址" << endl;
+		cin >> addr;
+		isnum(addr);//非数字
+		abs->personarray[abs->m_Size].m_Addr = addr;
+
+		abs->m_Size+=1;
+		cout << "添加成功" << endl;
+		system("pause");//按任意键继续
+		system("cls");//清屏
+	}
+}
+void showperson(Addressbooks *abs)
+{
+	if (abs->m_Size == 0)
+	{
+		cout << "当前记录为空" << endl;
+	}
+	else
+	{
+		for (int i = 0; i < abs->m_Size; i++)
+		{
+			cout << "姓名：" << abs->personarray[i].m_Name << "\t";
+			cout << "年龄：" << abs->personarray[i].m_age << "\t";
+			cout << "性别：" <<( abs->personarray[i].m_sex==1?"男":"女") << "\t";
+			cout << "电话号码：" << abs->personarray[i].m_Phone << "\t";
+			cout << "地址：" << abs->personarray[i].m_Addr << endl;
+		}
+	}
+	system("pause");
+	system("cls");
+}
+int isExist(Addressbooks* abs, string name)
+{
+	for (int i = 0; i < abs->m_Size; i += 1)
+	{
+		if (abs->personarray[i].m_Name == name)
+		{
+			return i;
+		}
+	}
+	return - 1;
+}
+void deleteperson(Addressbooks* abs)
+{
+	cout << "请输入需要删除的联系人姓名" << endl;
+	string name;
+	cin >> name;
+	int ret=isExist(abs, name);
+	if (ret != -1)
+	{
+		for (int i = ret;i<abs->m_Size;i++)
+		{
+			abs->personarray[i] = abs->personarray[i + 1];
+		}
+		abs->m_Size--;
+		cout << "删除成功" << endl;
+	}
+	else
+	{
+		cout << "查无此人" << endl;
+	}
+	system("pause");
+	system("cls");
+}
+void findperson(Addressbooks*abs)
+{
+	cout << "请输入需要查找的联系人姓名" << endl;
+	string name;
+	cin >> name;
+	int ret = isExist(abs, name);
+	if (ret != -1)
+	{
+		cout<< "姓名：" << abs->personarray[ret].m_Name << "\t";
+		cout << "年龄：" << abs->personarray[ret].m_age << "\t";
+		cout << "性别：" << (abs->personarray[ret].m_sex == 1 ? "男" : "女") << "\t";
+		cout << "电话号码：" << abs->personarray[ret].m_Phone << "\t";
+		cout << "地址：" << abs->personarray[ret].m_Addr << endl;
+	}
+	else
+	{
+		cout << "查无此人" << endl;
+	}
+	system("pause");
+	system("cls");
+}
+void modifyperson(Addressbooks*abs)
+{
+	cout<< "请输入需要修改的联系人姓名" << endl;
+	string name;
+	cin >> name;
+	int ret = isExist(abs, name);
+	if (ret != -1)
+	{
+		int key;
+		cout << "1：修改姓名	2：修改性别	3：修改年龄	4：修改电话	5：修改地址" << endl;
+		cin >> key;
+		modifytarget(key, abs, ret);
+	}
+	else
+	{
+		cout << "查无此人" << endl;
+	}
+
+	cout << "修改成功" << endl;
+	system("pause");
+	system("cls");
+}
+void cleanperson(Addressbooks*abs)
+{
+	abs->m_Size = 0;
+	cout << "通讯录已清空" << endl;
+	system("pause");
+	system("cls");
+}
+
+int main() 
+{	
+	Addressbooks abs;
+	abs.m_Size = 0;
+	int select = 0;
+	
+	while (true)
+	{
+		showmenu();
+		cin >> select;
+		switch (select)
+		{
+		case 1:
+			addPerson(&abs);
+			break;
+		case 2:
+			showperson(&abs);
+			break;
+		case 3:
+			deleteperson(&abs);
+			break;
+		case 4:
+			findperson(&abs);
+			break;
+		case 5:
+			modifyperson(&abs);
+			break;
+		case 6:
+			cleanperson(&abs);
+			break;
+		case 0:
+			cout << "欢迎下次使用" << endl;
+			system("pause");
+			return 0;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	system("pause");
+	return 0;
+}
